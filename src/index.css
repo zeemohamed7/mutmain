@@ -1,0 +1,25 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Add smooth page transitions */
+.page-transition {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+/* Add smooth button transitions */
+button {
+  @apply transition-all duration-200 ease-in-out;
+}
+
+/* Modal animation */
+.modal-enter {
+  @apply transition-all duration-300 ease-out;
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.modal-enter-active {
+  opacity: 1;
+  transform: scale(1);
+}
