@@ -35,7 +35,7 @@ export function ChatReflection() {
         isAI: true,
       };
     
-      setMessages([...messages, aiMessage]);
+      setMessages(prev => [...prev, aiMessage]);
     } catch (err: any) {
       const errorMessage =
         err.response?.status === 429
