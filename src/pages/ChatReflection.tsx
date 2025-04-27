@@ -7,16 +7,21 @@ export function ChatReflection() {
   const navigate = useNavigate();
   const [messages, setMessages] = useState([{
     id: 1,
-    text: "I see you're feeling alone. Would you like to talk about what's on your mind?",
+    text: "Hello! I'm here to help you reflect on your journal entries. What would you like to discuss today?",
     isAI: true
   }]);
   const [input, setInput] = useState('');
+
+  const formatMessage = (message: string): string => {
+    // Example: Trim whitespace and replace double newlines with single newlines
+    return message.trim().replace(/\n\n/g, '\n');
+  };
 
   const sendMessage = async () => {
     if (!input.trim()) return;
 
     const userMessage = {
-      id: messages.length + 1,
+      id: messages[messages.length - 1]?.id + 1 || 1, // Ensure unique ID
       text: input,
       isAI: false,
     };
@@ -28,29 +33,30 @@ export function ChatReflection() {
       const response = await axios.post(`${import.meta.env.VITE_BACKEND_SERVER_URL}/api/chat`, {
         message: input,
       });
-    
+
+      const formattedMessage = formatMessage(response.data.reply); // Format the AI response
+
       const aiMessage = {
-        id: messages.length + 2,
-        text: response.data.reply,
+        id: userMessage.id + 1, // Increment ID based on the last message
+        text: formattedMessage,
         isAI: true,
       };
-    
-      setMessages(prev => [...prev, aiMessage]);
+
+      setMessages((prev) => [...prev, aiMessage]);
     } catch (err: any) {
       const errorMessage =
         err.response?.status === 429
           ? 'Too many requests! Please wait a moment before trying again.'
           : 'Something went wrong. Please try again.';
-    
+
       const aiMessage = {
-        id: messages.length + 2,
+        id: userMessage.id + 1, // Increment ID based on the last message
         text: errorMessage,
         isAI: true,
       };
-    
-      setMessages([...messages, aiMessage]);
+
+      setMessages((prev) => [...prev, aiMessage]);
     }
-    
   };
 
   return <div className="bg-white min-h-screen flex flex-col">
